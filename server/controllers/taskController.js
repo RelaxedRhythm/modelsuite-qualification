@@ -23,7 +23,7 @@ const getTaskById = async (req, res) => {
   try {
     // — will throw a CastError from Mongoose instead of a clean 400
     const task = await Task.findById(req.params.id)
-      .populate('assignedTo', 'name email')
+      .populate('assignedTo', 'name email avatar')
       .populate('createdBy', 'name');
 
     if (!task) return res.status(404).json({ message: 'Task not found' });
@@ -68,7 +68,7 @@ const updateTask = async (req, res) => {
       req.params.id,
       { ...req.body },
       { new: true }
-    ).populate('assignedTo', 'name email');
+    ).populate('assignedTo', 'name email avatar');
 
     res.json(updated);
   } catch (error) {
