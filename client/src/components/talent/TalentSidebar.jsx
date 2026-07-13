@@ -36,6 +36,8 @@ const TalentSidebar = () => {
   const navigate  = useNavigate();
   const location  = useLocation();
 
+  console.log(user);
+
   return (
     <aside className="fixed inset-y-0 left-0 w-[220px] flex flex-col z-50"
       style={{ background: '#0D0D0D' }}>
@@ -72,13 +74,9 @@ const TalentSidebar = () => {
         <div className="sidebar-divider mb-4" />
         <div className="flex items-center justify-between gap-2 px-1">
           <div className="flex items-center gap-2.5 min-w-0">
-            {/* <div className="w-8 h-8 rounded-full avatar-talent flex items-center justify-center text-[12px] font-bold text-white shrink-0">
-              {user?.name?.[0]?.toUpperCase() ?? 'T'}
-            </div> */}
-
               <Avatar 
                 name={user?.name}
-                scr={user?.avatar}
+                src={user?.avatar}
                 className="w-8 h-8 avatar-talent text-[12px] font-bold text-white shrink-0"
               />
 

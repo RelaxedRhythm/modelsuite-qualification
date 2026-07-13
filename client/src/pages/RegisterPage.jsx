@@ -19,6 +19,8 @@ const RegisterPage = () => {
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
+  console.log("url is:",avatar);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -64,7 +66,7 @@ const RegisterPage = () => {
           <div className="flex flex-col gap-2 group">
             <label className={labelCls} htmlFor="avatar">Avatar Link</label>
             <input id="avatar" type="text" placeholder="Image Url"
-              value={avatar} onChange={(e) => setAvatar(e.target.value)} required className={inputCls} />
+              value={avatar} onChange={(e) => setAvatar(e.target.value)} className={inputCls} />
           </div>
 
           <div className="flex flex-col gap-2 group">

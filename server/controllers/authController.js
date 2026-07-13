@@ -9,7 +9,7 @@ const generateToken = (id, role) => {
 // @route POST /api/auth/register
 // @access Public
 const registerUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role,avatar } = req.body;
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -22,13 +22,16 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role,    });
+      role, 
+      avatar
+    });
 
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar:user.avatar,
       token: generateToken(user._id, user.role),
     });
   } catch (error) {
@@ -51,6 +54,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        avatar:user.avatar,
         token: generateToken(user._id, user.role),
       });
     } else {
