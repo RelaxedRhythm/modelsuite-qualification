@@ -1,13 +1,13 @@
-﻿const Task = require('../models/Task');
-
+﻿const Task = require("../models/Task");
+const sendAssignmentNotification = require("../utils/notification");
 // @desc  Get all tasks
 // @route GET /api/tasks
 // @access Admin
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find({})
-      .populate('assignedTo', 'name email')
-      .populate('createdBy', 'name')
+      .populate("assignedTo", "name email")
+      .populate("createdBy", "name")
       .sort({ createdAt: -1 });
 
     res.json(tasks);
@@ -23,10 +23,10 @@ const getTaskById = async (req, res) => {
   try {
     // — will throw a CastError from Mongoose instead of a clean 400
     const task = await Task.findById(req.params.id)
-      .populate('assignedTo', 'name email avatar')
-      .populate('createdBy', 'name');
+      .populate("assignedTo", "name email avatar")
+      .populate("createdBy", "name");
 
-    if (!task) return res.status(404).json({ message: 'Task not found' });
+    if (!task) return res.status(404).json({ message: "Task not found" });
 
     res.json(task);
   } catch (error) {
@@ -49,7 +49,10 @@ const createTask = async (req, res) => {
       dueDate,
       createdBy: req.user._id,
     });
-
+    if (task.assignedTo) {
+      await task.populate("assignedTo", "name email");
+      sendAssignmentNotification(task.assignedTo, task);
+    }
     res.status(201).json(task);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -62,13 +65,17 @@ const createTask = async (req, res) => {
 const updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
+    if (!task) return res.status(404).json({ message: "Task not found" });
     // including internal fields like createdBy or __v
     const updated = await Task.findByIdAndUpdate(
       req.params.id,
       { ...req.body },
-      { new: true }
-    ).populate('assignedTo', 'name email avatar');
+      { new: true },
+    ).populate("assignedTo", "name email avatar");
+
+    if(updated.assignedTo && task.assignedTo?.toString()!==updated.assignedTo._id.toString()){
+      sendAssignmentNotification(updated.assignedTo,updated);
+    }
 
     res.json(updated);
   } catch (error) {
@@ -82,14 +89,20 @@ const updateTask = async (req, res) => {
 const deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
+    if (!task) return res.status(404).json({ message: "Task not found" });
     // — orphaned Submission documents remain in DB after task deletion
     await Task.findByIdAndDelete(req.params.id);
 
-    res.json({ message: 'Task deleted' });
+    res.json({ message: "Task deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+module.exports = {
+  getAllTasks,
+  getTaskById,
+  createTask,
+  updateTask,
+  deleteTask,
+};
