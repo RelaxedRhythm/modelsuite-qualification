@@ -41,6 +41,11 @@ const createTask = async (req, res) => {
   const { title, description, status, assignedTo, dueDate } = req.body;
 
   try {
+    if (!title?.trim() || !description?.trim()) {
+      return res.status(400).json({
+        message: "Title and description are required.",
+      });
+    }
     const task = await Task.create({
       title,
       description,
@@ -67,6 +72,15 @@ const updateTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
     if (!task) return res.status(404).json({ message: "Task not found" });
     // including internal fields like createdBy or __v
+    const title=req.body.title;
+    const description=req.body.description;
+
+    if (!title?.trim() || !description?.trim()) {
+      return res.status(400).json({
+        message: "Title and description are required.",
+      });
+    }
+    
     const updated = await Task.findByIdAndUpdate(
       req.params.id,
       { ...req.body },
