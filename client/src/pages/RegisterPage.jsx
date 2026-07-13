@@ -83,7 +83,11 @@ const RegisterPage = () => {
           </div>
  
           <button type="submit" disabled={loading}
-            className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
+            className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200
+            disabled:opacity-60
+            disabled:cursor-not-allowed
+            disabled:scale-100
+            disabled:hover:scale-100">
               {
                 loading? <Loader/>: "Setup Profile"  
               }
