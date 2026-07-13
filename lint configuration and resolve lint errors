@@ -1,0 +1,179 @@
+[1mdiff --git a/client/eslint.config.js b/client/eslint.config.js[m
+[1mindex ea36dd3..233fe46 100644[m
+[1m--- a/client/eslint.config.js[m
+[1m+++ b/client/eslint.config.js[m
+[36m@@ -1,5 +1,6 @@[m
+ import js from '@eslint/js'[m
+ import globals from 'globals'[m
+[32m+[m[32mimport react from 'eslint-plugin-react'[m
+ import reactHooks from 'eslint-plugin-react-hooks'[m
+ import reactRefresh from 'eslint-plugin-react-refresh'[m
+ import { defineConfig, globalIgnores } from 'eslint/config'[m
+[36m@@ -8,14 +9,42 @@[m [mexport default defineConfig([[m
+   globalIgnores(['dist']),[m
+   {[m
+     files: ['**/*.{js,jsx}'],[m
+[32m+[m[32m    plugins: {[m
+[32m+[m[32m      react,[m
+[32m+[m[32m    },[m
+[32m+[m[32m    settings: {[m
+[32m+[m[32m    react: {[m
+[32m+[m[32m      version: "detect",[m
+[32m+[m[32m    },[m
+[32m+[m[32m  },[m
+[32m+[m
+     extends: [[m
+       js.configs.recommended,[m
+[32m+[m[32m      react.configs.flat.recommended,[m
+       reactHooks.configs.flat.recommended,[m
+       reactRefresh.configs.vite,[m
+     ],[m
+     languageOptions: {[m
+       globals: globals.browser,[m
+[31m-      parserOptions: { ecmaFeatures: { jsx: true } },[m
+[32m+[m[32m      parserOptions: {[m
+[32m+[m[32m        ecmaVersion: "latest",[m
+[32m+[m[32m        sourceType: "module",[m
+[32m+[m[32m        ecmaFeatures: {[m
+[32m+[m[32m          jsx: true,[m
+[32m+[m[32m        },[m
+[32m+[m[32m      },[m
+[32m+[m[32m    },[m
+[32m+[m[32m     rules: {[m
+[32m+[m[32m      // "no-unused-vars": [[m
+[32m+[m[32m      //   "error",[m
+[32m+[m[32m      //   {[m
+[32m+[m[32m      //     argsIgnorePattern: "^_",[m
+[32m+[m[32m      //     varsIgnorePattern: "^_",[m
+[32m+[m[32m      //   },[m
+[32m+[m[32m      // ],[m
+[32m+[m[32m      "react/react-in-jsx-scope": "off",[m
+[32m+[m[32m      "react/jsx-uses-vars": "error",[m
+[32m+[m[32m      "react/prop-types": "off",[m
+     },[m
+   },[m
+ ])[m
+[1mdiff --git a/client/package-lock.json b/client/package-lock.json[m
+[1mindex 09efaee..bb21099 100644[m
+[1m--- a/client/package-lock.json[m
+[1m+++ b/client/package-lock.json[m
+[36m@@ -21,7 +21,7 @@[m
+         "@types/react-dom": "^19.2.3",[m
+         "@vitejs/plugin-react": "^6.0.1",[m
+         "eslint": "^9.7.0",[m
+[31m-        "eslint-plugin-react": "^7.32.2",[m
+[32m+[m[32m        "eslint-plugin-react": "^7.37.5",[m
+         "eslint-plugin-react-hooks": "^7.1.1",[m
+         "eslint-plugin-react-refresh": "^0.5.2",[m
+         "globals": "^17.6.0",[m
+[1mdiff --git a/client/package.json b/client/package.json[m
+[1mindex 135fe1a..844eb58 100644[m
+[1m--- a/client/package.json[m
+[1m+++ b/client/package.json[m
+[36m@@ -8,7 +8,6 @@[m
+     "build": "vite build",[m
+     "lint": "eslint . --max-warnings 0",[m
+     "preview": "vite preview"[m
+[31m-    [m
+   },[m
+   "dependencies": {[m
+     "@tailwindcss/vite": "^4.3.0",[m
+[36m@@ -20,11 +19,11 @@[m
+   },[m
+   "devDependencies": {[m
+     "@eslint/js": "^9.0.0",[m
+[31m-    "eslint-plugin-react": "^7.32.2",[m
+     "@types/react": "^19.2.14",[m
+     "@types/react-dom": "^19.2.3",[m
+     "@vitejs/plugin-react": "^6.0.1",[m
+     "eslint": "^9.7.0",[m
+[32m+[m[32m    "eslint-plugin-react": "^7.37.5",[m
+     "eslint-plugin-react-hooks": "^7.1.1",[m
+     "eslint-plugin-react-refresh": "^0.5.2",[m
+     "globals": "^17.6.0",[m
+[1mdiff --git a/client/src/App.jsx b/client/src/App.jsx[m
+[1mindex db98479..f2f36d2 100644[m
+[1m--- a/client/src/App.jsx[m
+[1m+++ b/client/src/App.jsx[m
+[36m@@ -1,5 +1,6 @@[m
+ ﻿import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';[m
+[31m-import { AuthProvider, useAuth } from './context/AuthContext';[m
+[32m+[m[32mimport { AuthProvider} from './context/AuthContext';[m
+[32m+[m[32mimport {useAuth} from './context/useAuth'[m
+ import LoginPage from './pages/LoginPage';[m
+ import RegisterPage from './pages/RegisterPage';[m
+ import AdminDashboard from './pages/admin/AdminDashboard';[m
+[1mdiff --git a/client/src/components/admin/Sidebar.jsx b/client/src/components/admin/Sidebar.jsx[m
+[1mindex 8d36b91..4f7acee 100644[m
+[1m--- a/client/src/components/admin/Sidebar.jsx[m
+[1m+++ b/client/src/components/admin/Sidebar.jsx[m
+[36m@@ -1,5 +1,5 @@[m
+ import { useNavigate, useLocation } from 'react-router-dom';[m
+[31m-import { useAuth } from '../../context/AuthContext';[m
+[32m+[m[32mimport { useAuth } from '../../context/useAuth';[m
+ import Avatar from '../both/Avatar';[m
+ [m
+ /* ── Clean SVG line-art icons (no emojis, no AI icons) ── */[m
+[1mdiff --git a/client/src/components/talent/TalentSidebar.jsx b/client/src/components/talent/TalentSidebar.jsx[m
+[1mindex 749c5fe..46dbf3a 100644[m
+[1m--- a/client/src/components/talent/TalentSidebar.jsx[m
+[1m+++ b/client/src/components/talent/TalentSidebar.jsx[m
+[36m@@ -1,5 +1,5 @@[m
+ import { useNavigate, useLocation } from 'react-router-dom';[m
+[31m-import { useAuth } from '../../context/AuthContext';[m
+[32m+[m[32mimport { useAuth } from '../../context/useAuth';[m
+ import Avatar from '../both/Avatar';[m
+ [m
+ /* ── Clean SVG line-art icons ── */[m
+[1mdiff --git a/client/src/context/AuthContext.jsx b/client/src/context/AuthContext.jsx[m
+[1mindex fbf6fea..ad616ce 100644[m
+[1m--- a/client/src/context/AuthContext.jsx[m
+[1m+++ b/client/src/context/AuthContext.jsx[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-﻿import { createContext, useContext, useState } from 'react';[m
+[32m+[m[32m﻿import { createContext, useState } from 'react';[m
+ [m
+ const AuthContext = createContext(null);[m
+ [m
+[36m@@ -26,4 +26,3 @@[m [mexport const AuthProvider = ({ children }) => {[m
+   );[m
+ };[m
+ [m
+[31m-export const useAuth = () => useContext(AuthContext);[m
+[1mdiff --git a/client/src/pages/LoginPage.jsx b/client/src/pages/LoginPage.jsx[m
+[1mindex aa17c88..502774f 100644[m
+[1m--- a/client/src/pages/LoginPage.jsx[m
+[1m+++ b/client/src/pages/LoginPage.jsx[m
+[36m@@ -1,6 +1,6 @@[m
+ import { useState } from 'react';[m
+ import { Link, useNavigate } from 'react-router-dom';[m
+[31m-import { useAuth } from '../context/AuthContext';[m
+[32m+[m[32mimport { useAuth } from '../context/useAuth';[m
+ import API from '../api/axios';[m
+ import Loader from '../components/both/loader';[m
+ [m
+[1mdiff --git a/client/src/pages/RegisterPage.jsx b/client/src/pages/RegisterPage.jsx[m
+[1mindex 73db1d0..eb43e9b 100644[m
+[1m--- a/client/src/pages/RegisterPage.jsx[m
+[1m+++ b/client/src/pages/RegisterPage.jsx[m
+[36m@@ -1,6 +1,6 @@[m
+ import { useState } from 'react';[m
+ import { Link, useNavigate } from 'react-router-dom';[m
+[31m-import { useAuth } from '../context/AuthContext';[m
+[32m+[m[32mimport { useAuth } from '../context/useAuth';[m
+ import API from '../api/axios';[m
+ import Loader from '../components/both/loader';[m
+ [m
+[1mdiff --git a/client/src/pages/talent/TalentDashboard.jsx b/client/src/pages/talent/TalentDashboard.jsx[m
+[1mindex 7cbbe89..d41e708 100644[m
+[1m--- a/client/src/pages/talent/TalentDashboard.jsx[m
+[1m+++ b/client/src/pages/talent/TalentDashboard.jsx[m
+[36m@@ -3,7 +3,7 @@[m [mimport TalentSidebar from '../../components/talent/TalentSidebar';[m
+ import AvailableTasksList from '../../components/talent/AvailableTasksList';[m
+ import MyTasksList from '../../components/talent/MyTasksList';[m
+ import { fetchAvailableTasks, fetchMyTasks } from '../../api/talent';[m
+[31m-import { useAuth } from '../../context/AuthContext';[m
+[32m+[m[32mimport { useAuth } from '../../context/useAuth';[m
+ [m
+ /* ── Wave emoji stripped, use clean greeting ── */[m
+ [m
