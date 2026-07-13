@@ -1,16 +1,18 @@
 ﻿import { useState } from 'react';
 import { submitTask } from '../../api/submissions';
+import Loader from '../both/loader';
 
 const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
   const [file, setFile]   = useState(null);
   const [notes, setNotes] = useState('');
-
+  const [loading,setLoading] = useState(false);
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     if (file) formData.append('file', file);
     formData.append('notes', notes);
@@ -20,6 +22,8 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
       onClose();
     } catch (err) {
       alert(err.response?.data?.message || 'Submission failed');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -82,9 +86,11 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
               className="px-5 py-2.5 bg-bg-input text-text-muted border border-border rounded-lg text-sm font-medium cursor-pointer hover:bg-bg-hover hover:text-text-primary transition-all font-sans">
               Cancel
             </button>
-            <button type="submit"
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans">
-              Submit Task
+            <button type="submit" disabled={loading}
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans">{
+                loading? <Loader/>:"Submit Task"
+
+              }
             </button>
           </div>
         </form>

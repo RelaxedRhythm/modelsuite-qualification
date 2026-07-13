@@ -36,8 +36,6 @@ const TalentSidebar = () => {
   const navigate  = useNavigate();
   const location  = useLocation();
 
-  console.log(user);
-
   return (
     <aside className="fixed inset-y-0 left-0 w-[220px] flex flex-col z-50"
       style={{ background: '#0D0D0D' }}>

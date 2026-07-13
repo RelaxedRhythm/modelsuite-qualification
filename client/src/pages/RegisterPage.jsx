@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
+import Loader from '../components/both/loader';
 
 const Logo = () => (
   <img src="/modelsuite-talents.png" alt="ModelSuite Talents Logo" className="w-80 h-auto object-contain mx-auto block hover:scale-105 transition-transform duration-300" />
@@ -16,19 +17,22 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [role, setRole]       = useState('Talent');
   const [avatar,setAvatar]=useState('');
+  const [loading,setLoading]=useState(false);
+
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
-  console.log("url is:",avatar);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await API.post('/auth/register', { name, email, password, role, avatar });
       login(data);
       data.role === 'Admin' ? navigate('/admin/dashboard') : navigate('/talent/dashboard');
     } catch (err) {
       alert(err.response?.data?.message || 'Registration failed');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -77,10 +81,12 @@ const RegisterPage = () => {
               <option value="Admin">Admin</option>
             </select>
           </div>
-
-          <button type="submit"
+ 
+          <button type="submit" disabled={loading}
             className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
-            Setup Profile
+              {
+                loading? <Loader/>: "Setup Profile"  
+              }
           </button>
         </form>
 
