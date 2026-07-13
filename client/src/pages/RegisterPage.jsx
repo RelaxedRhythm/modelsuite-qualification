@@ -15,13 +15,14 @@ const RegisterPage = () => {
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole]       = useState('Talent');
+  const [avatar,setAvatar]=useState('');
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await API.post('/auth/register', { name, email, password, role });
+      const { data } = await API.post('/auth/register', { name, email, password, role, avatar });
       login(data);
       data.role === 'Admin' ? navigate('/admin/dashboard') : navigate('/talent/dashboard');
     } catch (err) {
@@ -58,6 +59,12 @@ const RegisterPage = () => {
             <label className={labelCls} htmlFor="reg-password">Password</label>
             <input id="reg-password" type="password" placeholder="••••••••"
               value={password} onChange={(e) => setPassword(e.target.value)} required className={inputCls} />
+          </div>
+
+          <div className="flex flex-col gap-2 group">
+            <label className={labelCls} htmlFor="avatar">Avatar Link</label>
+            <input id="avatar" type="text" placeholder="Image Url"
+              value={avatar} onChange={(e) => setAvatar(e.target.value)} required className={inputCls} />
           </div>
 
           <div className="flex flex-col gap-2 group">
