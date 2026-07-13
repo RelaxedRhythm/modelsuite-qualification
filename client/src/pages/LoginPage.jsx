@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
+import Loader from '../components/both/loader';
 
 const Logo = () => (
   <img src="/modelsuite-talents.png" alt="ModelSuite Talents Logo" className="w-80 h-auto object-contain mx-auto block hover:scale-105 transition-transform duration-300" />
@@ -13,17 +14,21 @@ const labelCls = 'text-[11px] font-semibold uppercase tracking-[0.6px] text-text
 const LoginPage = () => {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
+  const [loading,setLoading] = useState(false);
   const { login }   = useAuth();
   const navigate    = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await API.post('/auth/login', { email, password });
       login(data);
       data.role === 'Admin' ? navigate('/admin/dashboard') : navigate('/talent/dashboard');
     } catch (err) {
       alert(err.response?.data?.message || 'Login failed');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -53,9 +58,14 @@ const LoginPage = () => {
               value={password} onChange={(e) => setPassword(e.target.value)} required className={inputCls} />
           </div>
 
-          <button type="submit"
-            className="mt-1.5 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
-            Sign In
+          <button type="submit" disabled= {loading}
+            className="mt-1.5 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200 *
+            disabled:opacity-60
+            disabled:cursor-not-allowed
+            disabled:scale-100
+            disabled:hover:scale-100">{
+              loading ? <Loader/> : "Sign In"
+            }
           </button>
         </form>
 

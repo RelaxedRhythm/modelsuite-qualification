@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
+import Loader from '../components/both/loader';
 
 const Logo = () => (
   <img src="/modelsuite-talents.png" alt="ModelSuite Talents Logo" className="w-80 h-auto object-contain mx-auto block hover:scale-105 transition-transform duration-300" />
@@ -16,17 +17,22 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [role, setRole]       = useState('Talent');
   const [avatar,setAvatar]=useState('');
+  const [loading,setLoading]=useState(false);
+
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { data } = await API.post('/auth/register', { name, email, password, role, avatar });
       login(data);
       data.role === 'Admin' ? navigate('/admin/dashboard') : navigate('/talent/dashboard');
     } catch (err) {
       alert(err.response?.data?.message || 'Registration failed');
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -64,7 +70,7 @@ const RegisterPage = () => {
           <div className="flex flex-col gap-2 group">
             <label className={labelCls} htmlFor="avatar">Avatar Link</label>
             <input id="avatar" type="text" placeholder="Image Url"
-              value={avatar} onChange={(e) => setAvatar(e.target.value)} required className={inputCls} />
+              value={avatar} onChange={(e) => setAvatar(e.target.value)} className={inputCls} />
           </div>
 
           <div className="flex flex-col gap-2 group">
@@ -75,10 +81,16 @@ const RegisterPage = () => {
               <option value="Admin">Admin</option>
             </select>
           </div>
-
-          <button type="submit"
-            className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200">
-            Setup Profile
+ 
+          <button type="submit" disabled={loading}
+            className="mt-2 w-full py-3.5 rounded-[10px] text-[15px] font-semibold text-white cursor-pointer btn-gradient border-none hover:scale-[1.02] active:scale-[0.98] transition-transform duration-200
+            disabled:opacity-60
+            disabled:cursor-not-allowed
+            disabled:scale-100
+            disabled:hover:scale-100">
+              {
+                loading? <Loader/>: "Setup Profile"  
+              }
           </button>
         </form>
 
