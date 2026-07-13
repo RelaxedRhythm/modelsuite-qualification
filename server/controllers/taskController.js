@@ -22,11 +22,20 @@ const getAllTasks = async (req, res) => {
 const getTaskById = async (req, res) => {
   try {
     // — will throw a CastError from Mongoose instead of a clean 400
-    const task = await Task.findById(req.params.id)
-      .populate("assignedTo", "name email avatar")
-      .populate("createdBy", "name");
+    const query= req.user.role==="Talent" ? {
+      _id:req.params.id,
+      $or:[
+        {status:"Open"},
+        {assignedTo:req.user._id}
+      ]
+    }
+    :{_id:req.params.id};
+    
+    const task=await Task.findOne(query);
 
-    if (!task) return res.status(404).json({ message: "Task not found" });
+    if(!task){
+      return res.status(404).json({message:"Task not found"});
+    }
 
     res.json(task);
   } catch (error) {
