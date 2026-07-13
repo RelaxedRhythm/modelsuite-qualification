@@ -12,7 +12,7 @@ const getInitials=(name="")=>{
     );
 };
 
-const Avatar=({name,src,alt,className})=>{
+const Avatar=({name,src,alt,className,style})=>{
     const [imageError,setImageError]=useState(false);
 
     // useEffect(()=>{
@@ -23,7 +23,9 @@ const Avatar=({name,src,alt,className})=>{
 
     if(!showImage){
         return (
-            <div  className={`${className} flex items-center justify-center rounded-full font-bold text-white select-none`}>
+            <div  className={`${className} flex items-center justify-center rounded-full font-bold text-white select-none`}
+            style={style}
+            >
                 {getInitials(name)}
             </div>
         );
@@ -34,6 +36,7 @@ const Avatar=({name,src,alt,className})=>{
         src={src} 
         className={`${className} rounded-full object-cover`}
         alt={alt}
+        style={style}
         onError={()=>setImageError(true)}
         />
     )

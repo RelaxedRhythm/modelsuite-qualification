@@ -122,13 +122,13 @@ const TasksTable = ({ tasks, onEdit, onRefresh }) => {
                     <Avatar
                       name={task.assignedTo?.name}
                       src={task.assignedTo?.avatar}
-                      className="flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+                      className="text-[11px] font-bold text-white shrink-0"
                       style={{
                         width: '26px', height: '26px', borderRadius: '50%',
                         background: getAvatarGradient(task.assignedTo.name || ''),
                         fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
+                      }} 
+                     />
                     <span style={{ color: '#E5E2E1' }}>{task.assignedTo.name}</span>
                   </div>
                 ) : (

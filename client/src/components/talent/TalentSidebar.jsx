@@ -79,7 +79,7 @@ const TalentSidebar = () => {
               <Avatar 
                 name={user?.name}
                 scr={user?.avatar}
-                className="w-8 h-8 avatar-talent flex items-center justify-center text-[12px] font-bold text-white shrink-0"
+                className="w-8 h-8 avatar-talent text-[12px] font-bold text-white shrink-0"
               />
 
             <div className="min-w-0">
