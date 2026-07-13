@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react';
 import { createTask, fetchTalents } from '../../api/tasks';
+import Loader from '../both/loader';
 
 const STATUS_OPTIONS = ['Open', 'Claimed', 'Submitted', 'Approved', 'Rejected'];
 
@@ -10,6 +11,7 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
   const [form, setForm] = useState({ title: '', description: '', status: 'Open', assignedTo: '', dueDate: '' });
   const [talents, setTalents] = useState([]);
   const [loadingTalents, setLoadingTalents] = useState(false);
+
   useState(() => {
     setLoadingTalents(true);
     fetchTalents()
@@ -80,7 +82,7 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
               className={`${inputCls} custom-select cursor-pointer`}>
               <option value="">— Unassigned —</option>
               {loadingTalents
-                ? <option disabled>Loading...</option>
+                ? <option disabled><Loader/></option>
                 : talents.map((t) => <option key={t._id} value={t._id}>{t.name} ({t.email})</option>)}
             </select>
           </div>
@@ -91,8 +93,12 @@ const CreateTaskModal = ({ onClose, onCreated }) => {
               Cancel
             </button>
             <button type="submit"
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans">
-              Create Task
+              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer btn-gradient border-none font-sans"
+              disabled={loadingTalents}
+              >
+                {
+                  loadingTalents?<Loader/> : "Create Task"
+                }
             </button>
           </div>
         </form>
