@@ -9,6 +9,7 @@ const talentRoutes = require('./routes/talentRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const path = require('path');
 
+console.log(process.env.MONGO_URI)
 connectDB();
 
 const app = express();
