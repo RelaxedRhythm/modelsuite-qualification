@@ -6,7 +6,7 @@ const sendAssignmentNotification = require("../utils/notification");
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find({})
-      .populate("assignedTo", "name email")
+      .populate("assignedTo", "name email avatar")
       .populate("createdBy", "name")
       .sort({ createdAt: -1 });
 
